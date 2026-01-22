@@ -1,0 +1,11 @@
+{
+  "home-page": {
+    "title": "Page d'accueil",
+    "description": "Cette est la page d'accueil"
+  },
+  "language": {
+    "english": "Anglais",
+    "french": "Français",
+    "change-language": "Changer la langue"
+  }
+}
