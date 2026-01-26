@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
 import { Public_Sans, Karla } from "next/font/google"
-import { ThemeProvider } from "@/components/providers/theme-provider";
 import { NextIntlClientProvider } from 'next-intl';
 import { cookies } from "next/headers"
+import { ThemeProvider } from "../components/providers/theme-provider";
+import { Toaster } from "../components/ui/sonner";
 
 export const fontPublicSans = Public_Sans({
   subsets: ["latin"],
