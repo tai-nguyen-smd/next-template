@@ -14,6 +14,9 @@ import {
 import { FieldGroup } from '@/components/ui/field';
 import { Form } from '@/components/custom/rhf/rhf-form';
 import { FormField } from '@/components/custom/rhf/rhf-form-field';
+import { Dropzone } from '@/components/ui/dropzone';
+import { useState } from 'react';
+import { FileItem } from '@/components/ui/file-item';
 
 const formSchema = z.object({
   text: z.string().min(1, 'Text is required'),
@@ -32,6 +35,7 @@ const formSchema = z.object({
   checkbox: z.array(z.string()).min(1, 'Select at least one option'),
   radio: z.string().min(1, 'Please select an option'),
   switch: z.boolean(),
+  fileNames: z.array(z.string()).min(1, 'Select at least one file'),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -51,9 +55,11 @@ export default function FormFieldPage() {
       checkbox: [],
       radio: '',
       switch: false,
+      fileNames: [],
     },
   });
 
+  const [files, setFiles] = useState<File[]>([]);
   const onSubmit = async (data: FormData) => {
     console.log('Form data:', data);
     alert(JSON.stringify(data, null, 2));
@@ -162,6 +168,25 @@ export default function FormFieldPage() {
                 <div className="flex justify-end">
                   <Button type="submit">Submit</Button>
                 </div>
+
+                <Dropzone
+                  files={files}
+                  description="PDF, images. Max 50MB per file."
+                  accept={{ 'application/pdf': [], 'image/*': [] }}
+                  onFilesChange={files => setFiles(files)}
+                  onUploadRequest={files => console.log('UPLOAD HOOK', files)}
+                />
+                {files.map(file => (
+                  <FileItem
+                    key={file.name}
+                    id={file.name}
+                    file={file}
+                    progress={0}
+                    onRemove={filename =>
+                      setFiles(files.filter(file => file.name !== filename))
+                    }
+                  />
+                ))}
               </FieldGroup>
             </Form>
           </CardContent>
