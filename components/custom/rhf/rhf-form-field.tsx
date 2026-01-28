@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
+import type { DateRange } from 'react-day-picker';
 
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -26,6 +27,7 @@ import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/fie
 import type {
   CheckboxFormFieldProps,
   DateFormFieldProps,
+  DateRangeFormFieldProps,
   FormFieldProps,
   NumberFormFieldProps,
   RadioFormFieldProps,
@@ -55,7 +57,19 @@ function DatePickerField({
 }): React.ReactElement {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateFormatStr = dateFormat || 'yyyy-MM-dd';
-  const dateValue = value ? new Date(value as string) : undefined;
+
+  const dateValue = React.useMemo(() => {
+    if (!value) return undefined;
+    if (typeof value !== 'string') return undefined;
+    try {
+      const parsed = new Date(value);
+      // Check if date is valid
+      if (isNaN(parsed.getTime())) return undefined;
+      return parsed;
+    } catch {
+      return undefined;
+    }
+  }, [value]);
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -104,6 +118,133 @@ function DatePickerField({
               setIsCalendarOpen(false);
             }}
             disabled={disabled}
+            autoFocus
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * DateRangePicker component with calendar popup
+ */
+function DateRangePickerField({
+  value,
+  onChange,
+  onBlur,
+  placeholder,
+  format: dateFormat,
+  disabled,
+  error,
+}: {
+  value: unknown;
+  onChange: (value: unknown) => void;
+  onBlur: () => void;
+  placeholder?: string;
+  format?: string;
+  disabled?: boolean;
+  error?: boolean;
+}): React.ReactElement {
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const dateFormatStr = dateFormat || 'yyyy-MM-dd';
+
+  // Parse value to DateRange
+  const dateRangeValue: DateRange | undefined = React.useMemo(() => {
+    if (!value) return undefined;
+    if (typeof value !== 'object' || !('from' in value) || !('to' in value)) {
+      return undefined;
+    }
+    try {
+      const from =
+        value.from && typeof value.from === 'string'
+          ? (() => {
+              const parsed = new Date(value.from);
+              return isNaN(parsed.getTime()) ? undefined : parsed;
+            })()
+          : undefined;
+      const to =
+        value.to && typeof value.to === 'string'
+          ? (() => {
+              const parsed = new Date(value.to);
+              return isNaN(parsed.getTime()) ? undefined : parsed;
+            })()
+          : undefined;
+      return { from, to };
+    } catch {
+      return undefined;
+    }
+  }, [value]);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isCalendarOpen && !target.closest('.date-range-picker-container')) {
+        setIsCalendarOpen(false);
+      }
+    };
+
+    if (isCalendarOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isCalendarOpen]);
+
+  const displayValue = React.useMemo(() => {
+    if (!dateRangeValue?.from) return placeholder || 'Pick a date range';
+    if (dateRangeValue.from && dateRangeValue.to) {
+      return `${format(dateRangeValue.from, dateFormatStr)} - ${format(dateRangeValue.to, dateFormatStr)}`;
+    }
+    if (dateRangeValue.from) {
+      return `${format(dateRangeValue.from, dateFormatStr)} - ...`;
+    }
+    return placeholder || 'Pick a date range';
+  }, [dateRangeValue, dateFormatStr, placeholder]);
+
+  const handleSelect = (range: DateRange | undefined) => {
+    if (range?.from && range?.to) {
+      onChange({
+        from: format(range.from, dateFormatStr),
+        to: format(range.to, dateFormatStr),
+      });
+      setIsCalendarOpen(false);
+    } else if (range?.from) {
+      onChange({
+        from: format(range.from, dateFormatStr),
+        to: null,
+      });
+    } else {
+      onChange(null);
+    }
+  };
+
+  return (
+    <div className="date-range-picker-container relative w-full">
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+        disabled={disabled}
+        onBlur={onBlur}
+        className={cn(
+          'w-full justify-start text-left font-normal',
+          !dateRangeValue?.from && 'text-muted-foreground'
+        )}
+        aria-invalid={error ? 'true' : 'false'}
+      >
+        <CalendarIcon className="mr-2 h-4 w-4" />
+        <span>{displayValue}</span>
+      </Button>
+      {isCalendarOpen && (
+        <div className="bg-popover absolute z-50 mt-1 rounded-md border shadow-md">
+          <Calendar
+            mode="range"
+            selected={dateRangeValue}
+            onSelect={handleSelect}
+            disabled={disabled}
+            numberOfMonths={2}
             autoFocus
           />
         </div>
@@ -297,28 +438,45 @@ export function FormField(props: FormFieldProps): React.ReactElement {
         </RadioGroup>
       );
     }
-    // props.type === 'switch'
-    const switchProps = props as SwitchFormFieldProps;
-    return (
-      <div className="flex items-center space-x-2">
-        <Switch
-          id={name}
-          checked={fieldProps.value as boolean}
-          onCheckedChange={fieldProps.onChange}
-          disabled={switchProps.disabled}
-          aria-invalid={error ? 'true' : 'false'}
+    if (props.type === 'switch') {
+      const switchProps = props as SwitchFormFieldProps;
+      return (
+        <div className="flex items-center space-x-2">
+          <Switch
+            id={name}
+            checked={fieldProps.value as boolean}
+            onCheckedChange={fieldProps.onChange}
+            disabled={switchProps.disabled}
+            aria-invalid={error ? 'true' : 'false'}
+          />
+          <Label htmlFor={name} className="cursor-pointer text-sm font-normal">
+            {label}
+          </Label>
+        </div>
+      );
+    }
+    if (props.type === 'date-range') {
+      const dateRangeProps = props as DateRangeFormFieldProps;
+      return (
+        <DateRangePickerField
+          value={fieldProps.value}
+          onChange={fieldProps.onChange}
+          onBlur={fieldProps.onBlur}
+          placeholder={dateRangeProps.placeholder}
+          format={dateRangeProps.format}
+          disabled={dateRangeProps.disabled}
+          error={!!error}
         />
-        <Label htmlFor={name} className="cursor-pointer text-sm font-normal">
-          {label}
-        </Label>
-      </div>
-    );
+      );
+    }
+    return null;
   };
 
   const getDefaultValue = (): unknown => {
     if (props.type === 'select') return undefined;
     if (props.type === 'number') return undefined;
     if (props.type === 'date') return undefined;
+    if (props.type === 'date-range') return undefined;
     if (props.type === 'checkbox') return [];
     if (props.type === 'radio') return undefined;
     if (props.type === 'switch') return false;
@@ -353,12 +511,19 @@ export function FormField(props: FormFieldProps): React.ReactElement {
 
   return (
     <Field
-      orientation="responsive"
+      orientation="vertical"
       data-invalid={error ? 'true' : 'false'}
       className={cn(className)}
       style={
-        props.type === 'number' || props.type === 'date'
-          ? (props as NumberFormFieldProps | DateFormFieldProps).style
+        props.type === 'number' ||
+        props.type === 'date' ||
+        props.type === 'date-range'
+          ? (
+              props as
+                | NumberFormFieldProps
+                | DateFormFieldProps
+                | DateRangeFormFieldProps
+            ).style
           : undefined
       }
     >

@@ -77,12 +77,25 @@ export interface SwitchFormFieldProps extends BaseFormFieldProps {
   readonly defaultValue?: boolean;
 }
 
+export interface DateRangeFormFieldProps extends BaseFormFieldProps {
+  readonly type: 'date-range';
+  readonly placeholder?: string;
+  readonly disabled?: boolean;
+  readonly dateRangePickerProps?: {
+    readonly disabled?: boolean;
+    readonly [key: string]: unknown;
+  };
+  readonly format?: string;
+  readonly style?: React.CSSProperties;
+}
+
 export type FormFieldProps =
   | TextFormFieldProps
   | TextAreaFormFieldProps
   | SelectFormFieldProps
   | NumberFormFieldProps
   | DateFormFieldProps
+  | DateRangeFormFieldProps
   | CheckboxFormFieldProps
   | RadioFormFieldProps
   | SwitchFormFieldProps;
