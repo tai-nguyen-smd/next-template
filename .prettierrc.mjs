@@ -2,7 +2,7 @@ const config = {
   semi: true,
   trailingComma: 'es5',
   singleQuote: true,
-  printWidth: 100,
+  printWidth: 85,
   tabWidth: 2,
   useTabs: false,
   arrowParens: 'avoid',
