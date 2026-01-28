@@ -1,4 +1,4 @@
-import type { ColumnDef, ColumnDefBase } from '@tanstack/react-table';
+import type { ColumnDefBase } from '@tanstack/react-table';
 
 export interface DataTableColumn<TData> extends ColumnDefBase<TData> {
   id: string;

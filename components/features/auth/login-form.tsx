@@ -1,3 +1,10 @@
+'use client';
+
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import Link from 'next/link';
+
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,10 +21,38 @@ import {
   FieldLabel,
   FieldSeparator,
 } from '@/components/ui/field';
+import { Form } from '@/components/custom/rhf/rhf-form';
+import { FormField } from '@/components/custom/rhf/rhf-form-field';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
+import { FieldContent, FieldError } from '@/components/ui/field';
+
+const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    console.log('Login data:', data);
+    // Handle login logic here
+  };
+
+  const {
+    control,
+    formState: { errors },
+  } = form;
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
@@ -26,7 +61,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
           <CardDescription>Login with your Apple or Google account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <Form form={form} schema={loginSchema} onSubmit={onSubmit}>
             <FieldGroup>
               <Field>
                 <Button variant="outline" type="button">
@@ -51,26 +86,41 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
               </FieldSeparator>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
+              <FormField
+                name="email"
+                label="Email"
+                type="email"
+                placeholder="m@example.com"
+                required
+              />
+              <Field orientation="vertical">
+                <div className="flex items-center justify-between">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-4 hover:underline"
-                  >
+                  <a href="#" className="text-sm underline-offset-4 hover:underline">
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <FieldContent>
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                      <>
+                        <Input
+                          id="password"
+                          type="password"
+                          value={field.value}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          aria-invalid={errors.password ? 'true' : 'false'}
+                        />
+                        {errors.password && (
+                          <FieldError>{errors.password.message}</FieldError>
+                        )}
+                      </>
+                    )}
+                  />
+                </FieldContent>
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
@@ -79,7 +129,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 </FieldDescription>
               </Field>
             </FieldGroup>
-          </form>
+          </Form>
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
