@@ -71,6 +71,12 @@ export interface RadioFormFieldProps extends BaseFormFieldProps {
   readonly disabled?: boolean;
 }
 
+export interface SwitchFormFieldProps extends BaseFormFieldProps {
+  readonly type: 'switch';
+  readonly disabled?: boolean;
+  readonly defaultValue?: boolean;
+}
+
 export type FormFieldProps =
   | TextFormFieldProps
   | TextAreaFormFieldProps
@@ -78,9 +84,13 @@ export type FormFieldProps =
   | NumberFormFieldProps
   | DateFormFieldProps
   | CheckboxFormFieldProps
-  | RadioFormFieldProps;
+  | RadioFormFieldProps
+  | SwitchFormFieldProps;
 
-export interface FormProps<T extends FieldValues = FieldValues> extends Omit<UseFormProps<T>, 'resolver' | 'defaultValues'> {
+export interface FormProps<T extends FieldValues = FieldValues> extends Omit<
+  UseFormProps<T>,
+  'resolver' | 'defaultValues'
+> {
   readonly schema: z.ZodSchema<T>;
   readonly onSubmit: (data: T) => void | Promise<void>;
   readonly children: React.ReactNode;

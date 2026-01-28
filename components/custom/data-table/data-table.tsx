@@ -17,8 +17,10 @@ import {
 } from '@tanstack/react-table';
 import {
   ChevronDown,
+  ChevronLeft,
   ChevronRight,
   ChevronsLeft,
+  ChevronsRight,
   LayoutGridIcon,
   PlusIcon,
 } from 'lucide-react';
@@ -301,7 +303,7 @@ export function DataTable<TData>({
               disabled={!table.getCanPreviousPage()}
             >
               <span className="sr-only">Go to previous page</span>
-              <ChevronsLeft />
+              <ChevronLeft />
             </Button>
             <Button
               variant="outline"
@@ -321,7 +323,7 @@ export function DataTable<TData>({
               disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to last page</span>
-              <ChevronRight />
+              <ChevronsRight />
             </Button>
           </div>
         </div>

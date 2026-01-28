@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -29,6 +30,7 @@ import type {
   NumberFormFieldProps,
   RadioFormFieldProps,
   SelectFormFieldProps,
+  SwitchFormFieldProps,
 } from '@/components/custom/rhf/types';
 
 /**
@@ -271,28 +273,45 @@ export function FormField(props: FormFieldProps): React.ReactElement {
         </div>
       );
     }
-    // props.type === 'radio'
-    const radioProps = props as RadioFormFieldProps;
+    if (props.type === 'radio') {
+      const radioProps = props as RadioFormFieldProps;
+      return (
+        <RadioGroup
+          value={fieldProps.value as string | undefined}
+          onValueChange={fieldProps.onChange}
+          disabled={radioProps.disabled}
+          className={cn(radioProps.layout === 'horizontal' && 'flex-row')}
+          aria-invalid={error ? 'true' : 'false'}
+        >
+          {radioProps.options.map(option => (
+            <div key={option.value} className="flex items-center space-x-2">
+              <RadioGroupItem value={option.value} id={`${name}-${option.value}`} />
+              <Label
+                htmlFor={`${name}-${option.value}`}
+                className="cursor-pointer text-sm font-normal"
+              >
+                {option.label}
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      );
+    }
+    // props.type === 'switch'
+    const switchProps = props as SwitchFormFieldProps;
     return (
-      <RadioGroup
-        value={fieldProps.value as string | undefined}
-        onValueChange={fieldProps.onChange}
-        disabled={radioProps.disabled}
-        className={cn(radioProps.layout === 'horizontal' && 'flex-row')}
-        aria-invalid={error ? 'true' : 'false'}
-      >
-        {radioProps.options.map(option => (
-          <div key={option.value} className="flex items-center space-x-2">
-            <RadioGroupItem value={option.value} id={`${name}-${option.value}`} />
-            <Label
-              htmlFor={`${name}-${option.value}`}
-              className="cursor-pointer text-sm font-normal"
-            >
-              {option.label}
-            </Label>
-          </div>
-        ))}
-      </RadioGroup>
+      <div className="flex items-center space-x-2">
+        <Switch
+          id={name}
+          checked={fieldProps.value as boolean}
+          onCheckedChange={fieldProps.onChange}
+          disabled={switchProps.disabled}
+          aria-invalid={error ? 'true' : 'false'}
+        />
+        <Label htmlFor={name} className="cursor-pointer text-sm font-normal">
+          {label}
+        </Label>
+      </div>
     );
   };
 
@@ -302,8 +321,35 @@ export function FormField(props: FormFieldProps): React.ReactElement {
     if (props.type === 'date') return undefined;
     if (props.type === 'checkbox') return [];
     if (props.type === 'radio') return undefined;
+    if (props.type === 'switch') return false;
     return '';
   };
+
+  // Switch field has label inline, so render differently
+  if (props.type === 'switch') {
+    return (
+      <Field
+        orientation="responsive"
+        data-invalid={error ? 'true' : 'false'}
+        className={cn(className)}
+      >
+        <FieldContent>
+          <Controller
+            name={name}
+            control={control}
+            render={({ field }) =>
+              renderInput({
+                value: field.value ?? getDefaultValue(),
+                onChange: field.onChange,
+                onBlur: field.onBlur,
+              })
+            }
+          />
+          {errorMessage && <FieldError>{errorMessage}</FieldError>}
+        </FieldContent>
+      </Field>
+    );
+  }
 
   return (
     <Field
