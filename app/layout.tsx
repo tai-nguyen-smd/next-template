@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { cookies } from 'next/headers';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
+import { AppProviders } from '@/components/providers/app-provider';
 
 export const fontPublicSans = Public_Sans({
   subsets: ['latin'],
@@ -30,10 +31,22 @@ export default async function RootLayout({
   const locale = cookieStore.get('NEXT_LOCALE')?.value ?? 'en';
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body data-locale={locale} className={`${fontPublicSans.variable} ${fontKarla.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <NextIntlClientProvider>{children}</NextIntlClientProvider>
-          <Toaster />
+      <body
+        data-locale={locale}
+        className={`${fontPublicSans.variable} ${fontKarla.variable} antialiased`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider>
+            <AppProviders>
+              {children}
+              <Toaster />
+            </AppProviders>
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>
