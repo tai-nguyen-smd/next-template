@@ -2,7 +2,6 @@
 
 import {
   BarChart,
-  ChevronRight,
   DollarSign,
   FileArchive,
   FileCheck,
@@ -11,23 +10,14 @@ import {
   LucideAppWindow,
   User,
   Users,
-  type LucideIcon,
 } from 'lucide-react';
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { useMemo } from 'react';
 import Link from 'next/link';
