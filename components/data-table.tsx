@@ -44,6 +44,7 @@ import {
 } from '@/components/ui/chart';
 import { DataTable as CustomDataTable } from '@/components/custom/data-table/data-table';
 import { CheckCheck, Loader, MoreVerticalIcon } from 'lucide-react';
+import { useDebouncedValue } from '@/hooks/use-debounce-value';
 
 export const schema = z.object({
   id: z.number(),
@@ -377,6 +378,8 @@ export function DataTable({
 }: {
   data: z.infer<typeof schema>[];
 }) {
+  const [search, setSearch] = React.useState('');
+  const debouncedSearch = useDebouncedValue(search, 400);
   return (
     <CustomDataTable
       data={initialData}
@@ -384,18 +387,8 @@ export function DataTable({
       enableRowSelection
       enablePagination
       pageSize={10}
-      tabs={[
-        { value: 'outline', label: 'Outline' },
-        {
-          value: 'past-performance',
-          label: 'Past Performance',
-          badge: 3,
-          content: (
-            <div className="aspect-video w-full flex-1 rounded-lg border border-dashed" />
-          ),
-        },
-      ]}
-      defaultTab="outline"
+      searchValue={debouncedSearch}
+      onSearchChange={setSearch}
       showCustomizeColumns
       showAddButton
       addButtonLabel="Add Section"
