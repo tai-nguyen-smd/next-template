@@ -240,6 +240,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       return <TableCellViewer item={row.original} />;
     },
     enableHiding: false,
+    enableSorting: true,
   },
   {
     accessorKey: 'type',
