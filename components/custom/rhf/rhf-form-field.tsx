@@ -258,12 +258,7 @@ function DateRangePickerField({
  * Uses React Hook Form Controller to integrate with shadcn components
  */
 export function FormField(props: FormFieldProps): React.ReactElement {
-  const {
-    name,
-    label,
-    required = false,
-    className = 'w-full md:w-[calc(50%-0.5rem)]',
-  } = props;
+  const { name, label, required = false, className = 'w-full' } = props;
   const {
     control,
     formState: { errors },

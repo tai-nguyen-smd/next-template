@@ -93,35 +93,18 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 placeholder="m@example.com"
                 required
               />
-              <Field orientation="vertical">
-                <div className="flex items-center justify-between">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a href="#" className="text-sm underline-offset-4 hover:underline">
-                    Forgot your password?
-                  </a>
-                </div>
-                <FieldContent>
-                  <Controller
-                    name="password"
-                    control={control}
-                    render={({ field }) => (
-                      <>
-                        <Input
-                          id="password"
-                          type="password"
-                          value={field.value}
-                          onChange={field.onChange}
-                          onBlur={field.onBlur}
-                          aria-invalid={errors.password ? 'true' : 'false'}
-                        />
-                        {errors.password && (
-                          <FieldError>{errors.password.message}</FieldError>
-                        )}
-                      </>
-                    )}
-                  />
-                </FieldContent>
-              </Field>
+              <FormField
+                name="password"
+                label="Password"
+                type="password"
+                placeholder="Enter your password"
+                required
+              />
+              <FieldDescription>
+                <a href="#" className="text-sm underline-offset-4 hover:underline">
+                  Forgot your password?
+                </a>
+              </FieldDescription>
               <Field>
                 <Button type="submit">Login</Button>
                 <FieldDescription className="text-center">
