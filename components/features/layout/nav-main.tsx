@@ -1,12 +1,24 @@
-"use client"
+'use client';
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import {
+  BarChart,
+  ChevronRight,
+  DollarSign,
+  FileArchive,
+  FileCheck,
+  FileHeadphone,
+  FileText,
+  LucideAppWindow,
+  User,
+  Users,
+  type LucideIcon,
+} from 'lucide-react';
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from '@/components/ui/collapsible';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,58 +28,95 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar';
+import { useMemo } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+export function NavMain() {
+  const pathname = usePathname();
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
+  function isActive(pathname: string, href: string) {
+    if (href === '/') return pathname === '/';
+    return pathname === href || pathname.startsWith(href + '/');
+  }
+  const items = useMemo(() => {
+    return [
+      { key: 'dashboard', href: '/dashboard', icon: BarChart, label: 'Dashboard' },
+      {
+        key: 'firm-management',
+        href: '/firm-management',
+        icon: User,
+        label: 'Firm Management',
+      },
+      {
+        key: 'reports-cmar-internal',
+        href: '/reports-cmar-internal',
+        icon: FileHeadphone,
+        label: 'Reports',
+      },
+      {
+        key: 'investor-mandate',
+        href: '/investor-mandate',
+        icon: Users,
+        label: 'Investors',
+      },
+      { key: 'register', href: '/register', icon: FileText, label: 'Register' },
+      {
+        key: 'transaction',
+        href: '/transaction',
+        icon: DollarSign,
+        label: 'Transaction',
+      },
+      {
+        key: 'reconciliation',
+        href: '/reconciliation',
+        icon: FileArchive,
+        label: 'Reconciliation',
+      },
+      {
+        key: 'audit-trail',
+        href: '/audit-trail',
+        icon: FileCheck,
+        label: 'Audit Trail',
+      },
+      {
+        key: 'workspace',
+        href: '/workspace',
+        icon: LucideAppWindow,
+        label: 'Workspace',
+      },
+    ];
+  }, []);
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
+
       <SidebarMenu>
-        {items.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              </CollapsibleContent>
+        {items.map(item => {
+          const active = isActive(pathname, item.href);
+
+          return (
+            <SidebarMenuItem key={item.key}>
+              <SidebarMenuButton
+                asChild
+                isActive={active}
+                tooltip={item.label as string}
+                className={cn(
+                  'data-[active=true]:bg-primary data-[active=true]:text-primary-foreground',
+                  'border-l-4 border-transparent data-[active=true]:border-amber-700'
+                )}
+              >
+                <Link href={item.href}>
+                  <item.icon />
+                  <span>{item.label}</span>
+                </Link>
+              </SidebarMenuButton>
             </SidebarMenuItem>
-          </Collapsible>
-        ))}
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

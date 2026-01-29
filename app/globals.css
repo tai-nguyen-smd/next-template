@@ -127,3 +127,8 @@
     @apply bg-background text-foreground;
   }
 }
+.sidebar {
+  transition-property: opacity, transform;
+  transition-duration: 100ms;
+  will-change: transform;
+}
