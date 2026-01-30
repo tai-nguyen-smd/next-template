@@ -1,0 +1,365 @@
+---
+description: This is a new rule
+alwaysApply: false
+---
+
+# Overview
+
+This is a Next.js 16 project using App Router, TypeScript, React 19, Tailwind CSS v4, shadcn/ui, Radix UI, React Hook Form, Zod, TanStack Query, and next-intl.
+
+## Code Style and Structure
+
+### General Principles
+
+- Write concise, technical TypeScript/JavaScript code
+- Use functional and declarative programming patterns; avoid classes
+- Prefer iteration and modularization over code duplication
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError)
+- Structure files: exported component, subcomponents, helpers, static content
+
+### TypeScript Configuration
+
+- TypeScript strict mode is disabled (`strict: false`)
+- Use `noImplicitAny: false` (implicit any is allowed)
+- Path aliases: `@/*` maps to project root
+- Always use TypeScript for new files (`.ts` or `.tsx`)
+
+### Naming Conventions
+
+- Use camelCase for variables and functions
+- Use PascalCase for React components, types, and interfaces
+- Use lowercase with dashes for directories (e.g., `components/auth-wizard`)
+- Use kebab-case for file names when appropriate
+- Favor named exports for components
+
+## React Best Practices
+
+### Component Structure
+
+- Use functional components exclusively
+- Use the `function` keyword for component definitions
+- Implement hooks correctly (useState, useEffect, useContext, useReducer, useMemo, useCallback)
+- Follow the Rules of Hooks (only call hooks at the top level, only call hooks from React functions)
+- Create custom hooks to extract reusable component logic
+- Use React.memo() for component memoization when appropriate
+- Implement useCallback for memoizing functions passed as props
+- Use useMemo for expensive computations
+- Avoid inline function definitions in render to prevent unnecessary re-renders
+- Prefer composition over inheritance
+- Use children prop and render props pattern for flexible, reusable components
+- Implement React.lazy() and Suspense for code splitting
+- Use refs sparingly and mainly for DOM access
+- Prefer controlled components over uncontrolled components
+- Implement error boundaries to catch and handle errors gracefully
+- Use cleanup functions in useEffect to prevent memory leaks
+- Use short-circuit evaluation and ternary operators for conditional rendering
+
+### Server vs Client Components
+
+- **Default to Server Components** - Next.js App Router uses Server Components by default
+- Use `'use client'` directive ONLY when necessary:
+  - When using React hooks (useState, useEffect, etc.)
+  - When using browser-only APIs (window, document, localStorage, etc.)
+  - When using event handlers (onClick, onChange, etc.)
+  - When using context providers that need client-side state
+- Minimize `'use client'` usage - keep it at the leaf component level when possible
+- Server Components should handle data fetching and server-side logic
+- Client Components should be small and focused on interactivity
+
+### Component Organization
+
+- Place components in appropriate directories:
+  - `components/ui/` - shadcn/ui base components
+  - `components/features/` - feature-specific components
+  - `components/custom/` - custom wrapper components
+  - `components/shared/` - shared/common components
+- Each feature should have its own directory under `components/features/`
+- Use colocation - keep related files together
+
+## Next.js App Router Patterns
+
+### Routing
+
+- Use App Router conventions (folders define routes)
+- Use route groups `(public)` and `(protected)` for organization
+- Use `layout.tsx` for shared layouts
+- Use `page.tsx` for route pages
+- Use `error.tsx` for error boundaries
+- Use `not-found.tsx` for 404 pages
+- Use `loading.tsx` for loading states
+
+### Data Fetching
+
+- Use Server Components for data fetching when possible
+- Use Server Actions for mutations
+- Use TanStack Query (React Query) for client-side data fetching and caching
+- Prefer async/await over promises
+- Handle errors gracefully with try-catch blocks
+
+### Internationalization
+
+- Use `next-intl` for i18n
+- Translation files are in `i18n/locales/`
+- Use `useTranslations()` hook in Client Components
+- Use `getTranslations()` in Server Components
+
+## State Management
+
+### Local State
+
+- Use `useState` for component-local state
+- Use `useReducer` for complex local state logic
+
+### Global State
+
+- Use TanStack Query for server state management
+- Use React Context for intermediate state sharing when prop drilling becomes cumbersome
+- Consider Zustand if global client state is needed (not currently in project but can be added)
+
+### Form State
+
+- Use React Hook Form for all forms
+- Use Zod schemas for validation with `@hookform/resolvers/zod`
+- Use the custom `Form` component from `@/components/custom/rhf/rhf-form`
+- Use `Controller` component for complex form fields
+
+## UI and Styling
+
+### Tailwind CSS
+
+- Use Tailwind CSS v4 for all styling
+- Use utility classes for rapid development
+- Follow mobile-first responsive design approach
+- Use Tailwind's design tokens (colors, spacing, typography)
+- Use `cn()` utility from `@/lib/utils` for conditional classes
+- Prefer Tailwind utilities over custom CSS
+
+### shadcn/ui Components
+
+- Use shadcn/ui components from `@/components/ui/`
+- Style: "new-york" (as configured in `components.json`)
+- Base color: "zinc"
+- CSS variables enabled
+- Icon library: Lucide React
+- Components are customizable and can be modified as needed
+
+### Radix UI
+
+- shadcn/ui is built on Radix UI primitives
+- Use Radix UI components when shadcn/ui doesn't have what you need
+- Ensure accessibility (a11y) - Radix UI handles this by default
+
+### Component Variants
+
+- Use `class-variance-authority` (cva) for component variants
+- Define variants using the `cva` function
+- Export variant types using `VariantProps`
+
+## Forms and Validation
+
+### React Hook Form
+
+- Always use React Hook Form for forms
+- Use the custom `Form` wrapper from `@/components/custom/rhf/rhf-form`
+- Use `useForm` hook with `zodResolver` for validation
+- Use `Controller` for complex inputs (like InputOTP)
+- Use `Field`, `FieldLabel`, `FieldDescription`, `FieldError` from `@/components/ui/field`
+
+### Zod Validation
+
+- Define schemas using Zod
+- Use `z.infer<typeof schema>` for TypeScript types
+- Provide clear, user-friendly error messages
+- Validate on both client and server when possible
+
+## Error Handling
+
+### Error Patterns
+
+- Prioritize error handling and edge cases
+- Handle errors and edge cases at the beginning of functions
+- Use early returns for error conditions to avoid deeply nested if statements
+- Place the happy path last in the function for improved readability
+- Avoid unnecessary else statements; use if-return pattern instead
+- Use guard clauses to handle preconditions and invalid states early
+- Implement proper error logging and user-friendly error messages
+- Model expected errors as return values in Server Actions
+
+### Error Boundaries
+
+- Use Next.js `error.tsx` for route-level error boundaries
+- Implement error boundaries for critical sections
+- Provide fallback UI for errors
+
+## Performance Optimization
+
+### Code Splitting
+
+- Minimize `'use client'` usage - favor Server Components
+- Use dynamic imports for heavy components: `dynamic(() => import('./Component'))`
+- Wrap client components in Suspense with fallback
+- Use route-based code splitting (automatic with Next.js App Router)
+
+### Images
+
+- Use Next.js `Image` component for optimized images
+- Configure remote patterns in `next.config.ts`
+- Use WebP/AVIF formats (configured in next.config.ts)
+- Include size data for better performance
+- Implement lazy loading
+
+### Bundle Optimization
+
+- Leverage Next.js `optimizePackageImports` for large libraries (lucide-react, recharts, date-fns)
+- Use tree-shaking friendly imports
+- Avoid importing entire libraries when only a few functions are needed
+
+## Accessibility (a11y)
+
+### Requirements
+
+- Use semantic HTML elements
+- Implement proper ARIA attributes (Radix UI handles this)
+- Ensure keyboard navigation support
+- Use proper form labels and descriptions
+- Test with screen readers when possible
+
+## Testing Considerations
+
+### Testing Patterns
+
+- Write unit tests for components using Jest and React Testing Library
+- Test user interactions, not implementation details
+- Use `@testing-library/user-event` for user interactions
+- Mock API calls and external dependencies
+
+## Security
+
+### Best Practices
+
+- Sanitize user inputs to prevent XSS attacks
+- Use `dangerouslySetInnerHTML` sparingly and only with sanitized content
+- Validate all user inputs on both client and server
+- Use environment variables for sensitive data (never commit secrets)
+- Use HTTPS in production
+
+## File Structure
+
+### Directory Organization
+
+```
+app/
+  (public)/          # Public routes
+  (protected)/       # Protected routes
+components/
+  ui/                # shadcn/ui base components
+  features/          # Feature-specific components
+  custom/            # Custom wrapper components
+  shared/            # Shared/common components
+  providers/         # Context providers
+hooks/               # Custom React hooks
+lib/                 # Utility functions
+i18n/                # Internationalization files
+configs/             # Configuration files
+```
+
+### Import Paths
+
+- Use path aliases: `@/components`, `@/lib`, `@/hooks`, `@/ui`
+- Import from `@/components/ui/` for shadcn components
+- Import from `@/components/features/` for feature components
+- Import from `@/lib/utils` for utilities
+
+## Code Quality
+
+### ESLint and Prettier
+
+- Follow ESLint rules (Next.js config + Prettier)
+- Use Prettier for code formatting
+- Run `npm run lint` before committing
+- Fix linting errors before submitting code
+
+### Type Safety
+
+- Use TypeScript types and interfaces
+- Avoid `any` type when possible (though project allows implicit any)
+- Use `z.infer` for Zod schema types
+- Use proper typing for props and function parameters
+
+## Common Patterns
+
+### Form Pattern
+
+```typescript
+'use client';
+
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Form } from '@/components/custom/rhf/rhf-form';
+
+const schema = z.object({ /* ... */ });
+type FormData = z.infer<typeof schema>;
+
+export function MyForm() {
+  const form = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { /* ... */ },
+  });
+
+  const onSubmit = async (data: FormData) => {
+    // Handle submission
+  };
+
+  return (
+    <Form form={form} onSubmit={onSubmit}>
+      {/* Form fields */}
+    </Form>
+  );
+}
+```
+
+### Server Component Pattern
+
+```typescript
+// No 'use client' - this is a Server Component
+import { getTranslations } from 'next-intl/server';
+
+export default async function Page() {
+  const t = await getTranslations();
+
+  // Can fetch data directly
+  const data = await fetchData();
+
+  return <div>{/* ... */}</div>;
+}
+```
+
+### Client Component Pattern
+
+```typescript
+'use client';
+
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+
+export function InteractiveComponent() {
+  const t = useTranslations();
+  const [state, setState] = useState();
+
+  return <div>{/* ... */}</div>;
+}
+```
+
+## Key Reminders
+
+1. **Default to Server Components** - Only use `'use client'` when absolutely necessary
+2. **Use React Hook Form + Zod** - For all forms with validation
+3. **Use Tailwind CSS** - For all styling, prefer utilities over custom CSS
+4. **Follow shadcn/ui patterns** - Use components from `@/components/ui/`
+5. **Use path aliases** - `@/` for all imports
+6. **Handle errors early** - Use guard clauses and early returns
+7. **Optimize performance** - Minimize client components, use code splitting
+8. **Accessibility first** - Use semantic HTML and proper ARIA attributes
+9. **Type safety** - Use TypeScript types throughout
+10. **Internationalization** - Use next-intl for all user-facing text
