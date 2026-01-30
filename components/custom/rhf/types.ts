@@ -89,6 +89,16 @@ export interface DateRangeFormFieldProps extends BaseFormFieldProps {
   readonly style?: React.CSSProperties;
 }
 
+export interface OTPFormFieldProps extends BaseFormFieldProps {
+  readonly type: 'otp';
+  readonly maxLength?: number;
+  readonly disabled?: boolean;
+  readonly otpProps?: {
+    readonly disabled?: boolean;
+    readonly [key: string]: unknown;
+  };
+}
+
 export type FormFieldProps =
   | TextFormFieldProps
   | TextAreaFormFieldProps
@@ -98,7 +108,8 @@ export type FormFieldProps =
   | DateRangeFormFieldProps
   | CheckboxFormFieldProps
   | RadioFormFieldProps
-  | SwitchFormFieldProps;
+  | SwitchFormFieldProps
+  | OTPFormFieldProps;
 
 export interface FormProps<T extends FieldValues = FieldValues> extends Omit<
   UseFormProps<T>,

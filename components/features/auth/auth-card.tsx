@@ -5,16 +5,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
 export default function AuthCard({
   children,
   title,
   description,
+  className,
 }: {
   children: React.ReactNode;
   title: string;
   description: string;
+  className?: string;
 }) {
   return (
     <Card>
@@ -25,7 +28,9 @@ export default function AuthCard({
         </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent className={cn('flex flex-col gap-5', className)}>
+        {children}
+      </CardContent>
     </Card>
   );
 }

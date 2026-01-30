@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 import type {
   CheckboxFormFieldProps,
@@ -30,6 +31,7 @@ import type {
   DateRangeFormFieldProps,
   FormFieldProps,
   NumberFormFieldProps,
+  OTPFormFieldProps,
   RadioFormFieldProps,
   SelectFormFieldProps,
   SwitchFormFieldProps,
@@ -493,6 +495,26 @@ export function FormField(props: FormFieldProps): React.ReactElement {
         />
       );
     }
+    if (props.type === 'otp') {
+      const otpProps = props as OTPFormFieldProps;
+      const maxLength = otpProps.maxLength || 6;
+      return (
+        <InputOTP
+          maxLength={maxLength}
+          value={fieldProps.value as string}
+          onChange={fieldProps.onChange}
+          onBlur={fieldProps.onBlur}
+          disabled={otpProps.disabled}
+          aria-invalid={error ? 'true' : 'false'}
+        >
+          <InputOTPGroup>
+            {Array.from({ length: maxLength }).map((_, index) => (
+              <InputOTPSlot key={index} index={index} />
+            ))}
+          </InputOTPGroup>
+        </InputOTP>
+      );
+    }
     return null;
   };
 
@@ -504,6 +526,7 @@ export function FormField(props: FormFieldProps): React.ReactElement {
     if (props.type === 'checkbox') return [];
     if (props.type === 'radio') return undefined;
     if (props.type === 'switch') return false;
+    if (props.type === 'otp') return '';
     return '';
   };
 

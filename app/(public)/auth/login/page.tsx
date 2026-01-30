@@ -1,5 +1,9 @@
 import { LoginForm } from '@/components/features/auth/login-form';
 
 export default function LoginPage() {
-  return <LoginForm />;
+  return (
+    <div className="flex w-full max-w-sm flex-col gap-6">
+      <LoginForm />;
+    </div>
+  );
 }
