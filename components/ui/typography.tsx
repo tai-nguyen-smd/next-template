@@ -23,6 +23,7 @@ const typographyVariants = cva('text-foreground', {
       muted: 'text-muted-foreground',
       primary: 'text-primary',
       destructive: 'text-destructive',
+      success: 'text-success',
     },
 
     weight: {

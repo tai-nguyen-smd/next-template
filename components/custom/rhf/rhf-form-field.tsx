@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Eye, EyeOff } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
 
 import { cn } from '@/lib/utils';
@@ -266,17 +266,14 @@ export function FormField(props: FormFieldProps): React.ReactElement {
 
   const error = errors[name];
   const errorMessage = error?.message as string | undefined;
+  const [showPassword, setShowPassword] = useState(false);
 
   const renderInput = (fieldProps: {
     value: unknown;
     onChange: (value: unknown) => void;
     onBlur: () => void;
   }): React.ReactElement => {
-    if (
-      props.type === 'text' ||
-      props.type === 'email' ||
-      props.type === 'password'
-    ) {
+    if (props.type === 'text' || props.type === 'email') {
       return (
         <Input
           value={fieldProps.value as string}
@@ -288,6 +285,38 @@ export function FormField(props: FormFieldProps): React.ReactElement {
           aria-invalid={error ? 'true' : 'false'}
           {...(props.inputProps as React.InputHTMLAttributes<HTMLInputElement>)}
         />
+      );
+    }
+    if (props.type === 'password') {
+      return (
+        <div className="relative">
+          <Input
+            value={fieldProps.value as string}
+            onChange={e => fieldProps.onChange(e.target.value)}
+            onBlur={fieldProps.onBlur}
+            className="bg-background pr-8"
+            id={`${name}-password-toggle`}
+            placeholder={props.placeholder}
+            type={showPassword ? 'text' : 'password'}
+            disabled={props.disabled}
+            aria-invalid={error ? 'true' : 'false'}
+            {...(props.inputProps as React.InputHTMLAttributes<HTMLInputElement>)}
+          />
+          <Button
+            className="absolute top-0 right-0 h-full px-3 hover:bg-transparent"
+            onClick={() => setShowPassword(!showPassword)}
+            size="icon"
+            type="button"
+            variant="ghost"
+            aria-invalid={error ? 'true' : 'false'}
+          >
+            {showPassword ? (
+              <EyeOff className="text-muted-foreground h-4 w-4" />
+            ) : (
+              <Eye className="text-muted-foreground h-4 w-4" />
+            )}
+          </Button>
+        </div>
       );
     }
     if (props.type === 'textarea') {

@@ -5,22 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-} from '@/components/ui/field';
+import { Field, FieldDescription, FieldGroup } from '@/components/ui/field';
 import { Form } from '@/components/custom/rhf/rhf-form';
 import { FormField } from '@/components/custom/rhf/rhf-form-field';
+import AuthCard from '@/components/features/auth/auth-card';
 
 const resetPasswordSchema = z
   .object({
@@ -34,7 +23,7 @@ const resetPasswordSchema = z
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
-export function ResetPasswordForm({ className, ...props }: React.ComponentProps<'div'>) {
+export function ResetPasswordForm() {
   const form = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -49,44 +38,32 @@ export function ResetPasswordForm({ className, ...props }: React.ComponentProps<
   };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Reset Password</CardTitle>
-          <CardDescription>
-            Enter your new password below
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form form={form} schema={resetPasswordSchema} onSubmit={onSubmit}>
-            <FieldGroup>
-              <FormField
-                name="password"
-                label="New Password"
-                type="password"
-                placeholder="Enter your new password"
-                required
-              />
-              <FormField
-                name="confirmPassword"
-                label="Confirm New Password"
-                type="password"
-                placeholder="Confirm your new password"
-                required
-              />
-              <FieldDescription>
-                Must be at least 8 characters long.
-              </FieldDescription>
-              <Field>
-                <Button type="submit">Reset Password</Button>
-              </Field>
-              <FieldDescription className="text-center">
-                <Link href="/auth/login">Back to Sign in</Link>
-              </FieldDescription>
-            </FieldGroup>
-          </Form>
-        </CardContent>
-      </Card>
-    </div>
+    <AuthCard title="Reset Password" description="Enter your new password below">
+      <Form form={form} schema={resetPasswordSchema} onSubmit={onSubmit}>
+        <FieldGroup>
+          <FormField
+            name="password"
+            label="New Password"
+            type="password"
+            placeholder="Enter your new password"
+            required
+          />
+          <FormField
+            name="confirmPassword"
+            label="Confirm New Password"
+            type="password"
+            placeholder="Confirm your new password"
+            required
+          />
+          <FieldDescription>Must be at least 8 characters long.</FieldDescription>
+          <Field>
+            <Button type="submit">Reset Password</Button>
+          </Field>
+          <FieldDescription className="text-center">
+            <Link href="/auth/login">Back to Sign in</Link>
+          </FieldDescription>
+        </FieldGroup>
+      </Form>
+    </AuthCard>
   );
 }
