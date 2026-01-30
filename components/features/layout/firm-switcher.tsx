@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { Typography } from '@/components/ui/typography';
 
 export interface FirmSwitcherProps {
   id?: string;
@@ -68,8 +69,12 @@ export function FirmSwitcher() {
                 <activeTeam.logo className="size-4" />
               </div>
               <div className="hidden flex-1 text-left text-sm leading-tight md:flex md:flex-col">
-                <span className="truncate font-medium">{activeTeam.name}</span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <Typography variant="p" className="truncate font-medium">
+                  {activeTeam.name}
+                </Typography>
+                <Typography variant="span" className="truncate text-xs">
+                  {activeTeam.plan}
+                </Typography>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -88,6 +93,7 @@ export function FirmSwitcher() {
                 key={team.name}
                 onClick={() => setActiveTeam(team)}
                 className="gap-2 p-2"
+                aria-selected={activeTeam.name === team.name}
               >
                 <div className="flex size-6 items-center justify-center rounded-md border">
                   <team.logo className="size-3.5 shrink-0" />
@@ -101,7 +107,9 @@ export function FirmSwitcher() {
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">Add firm</div>
+              <Typography variant="p" color="muted" className="font-medium">
+                Add firm
+              </Typography>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

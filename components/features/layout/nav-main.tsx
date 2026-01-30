@@ -19,6 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { Typography } from '@/components/ui/typography';
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -100,7 +101,7 @@ export function NavMain() {
               >
                 <Link href={item.href}>
                   <item.icon />
-                  <span>{item.label}</span>
+                  <Typography variant="span">{item.label}</Typography>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

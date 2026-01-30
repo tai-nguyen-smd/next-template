@@ -1,86 +1,98 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
-const typographyVariants = cva("text-foreground", {
+const typographyVariants = cva('text-foreground', {
   variants: {
     variant: {
-      // DISPLAY - Font: Public Sans
-      "display-1": "font-public-sans text-[56px] leading-[64px]",
-      "display-2": "font-public-sans text-[44px] leading-[54px]",
-      "display-3": "font-public-sans text-[36px] leading-[24px]",
+      h1: 'scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl',
+      h2: 'scroll-m-20 text-3xl font-semibold tracking-tight',
+      h3: 'scroll-m-20 text-2xl font-semibold tracking-tight',
+      h4: 'scroll-m-20 text-xl font-semibold tracking-tight',
+      h5: 'scroll-m-20 text-lg font-semibold tracking-tight',
+      h6: 'scroll-m-20 text-base font-semibold tracking-tight',
 
-      // HEADLINE - Font: Karla
-      "headline-1": "font-karla text-[32px] leading-[24px]",
-      "headline-2": "font-karla text-[28px] leading-[36px]",
-      "headline-3": "font-karla text-[24px] leading-[32px]",
-      
-      // Legacy headline variants (for backward compatibility)
-      "h1": "font-karla text-[32px] leading-[24px]",
-      "h2": "font-karla text-[28px] leading-[36px]",
-      "h3": "font-karla text-[24px] leading-[32px]",
-
-      // BODY - Font: Karla
-      "body-1": "font-karla text-[18px] leading-[28px]",
-      "body-2": "font-karla text-[16px] leading-[24px]",
-      "body-3": "font-karla text-[14px] leading-[20px]",
-      "body-4": "font-karla text-[12px] leading-[16px]",
-
-      // BUTTON - Font: Karla
-      "button-1": "font-karla text-[16px] leading-[24px]",
-      "button-2": "font-karla text-[14px] leading-[20px]",
-
-      // LABEL - Font: Karla
-      "label-1": "font-karla text-[14px] leading-[20px]",
-      "label-2": "font-karla text-[12px] leading-[26px]",
-      "label-3": "font-karla text-[11px] leading-[16px]",
+      p: 'text-sm leading-7',
+      lead: 'text-xl text-muted-foreground',
+      blockquote: 'mt-6 border-l-2 pl-6 italic text-muted-foreground',
+      span: 'text-sm inline-block',
     },
+
+    color: {
+      default: 'text-foreground',
+      muted: 'text-muted-foreground',
+      primary: 'text-primary',
+      destructive: 'text-destructive',
+    },
+
     weight: {
-      regular: "font-normal",
-      semibold: "font-semibold",
-      medium: "font-medium",
+      default: 'font-normal',
+      medium: 'font-medium',
+      semibold: 'font-semibold',
+      bold: 'font-bold',
+      extrabold: 'font-extrabold',
+    },
+
+    align: {
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
+      justify: 'text-justify',
     },
   },
-  defaultVariants: {
-    variant: "body-2",
-    weight: "regular",
-  },
-})
 
-export interface TypographyProps
-  extends React.HTMLAttributes<HTMLElement>,
-    VariantProps<typeof typographyVariants> {
-  as?: React.ElementType
-}
+  defaultVariants: {
+    variant: 'p',
+    color: 'default',
+    weight: 'default',
+  },
+});
+
+const tagMap: Record<
+  NonNullable<VariantProps<typeof typographyVariants>['variant']>,
+  React.ElementType
+> = {
+  h1: 'h1',
+  h2: 'h2',
+  h3: 'h3',
+  h4: 'h4',
+  h5: 'h5',
+  h6: 'h6',
+  p: 'p',
+  lead: 'p',
+  blockquote: 'blockquote',
+  span: 'span',
+};
+
+export type TypographyProps = React.HTMLAttributes<HTMLElement> &
+  VariantProps<typeof typographyVariants> & {
+    as?: React.ElementType;
+    truncate?: boolean;
+    noWrap?: boolean;
+  };
 
 export function Typography({
-  as: Component = "p",
   variant,
+  color,
   weight,
+  align,
+  as,
+  truncate,
+  noWrap,
   className,
   ...props
 }: TypographyProps) {
-  // Auto-set weight for certain variants if not provided
-  const autoWeight = React.useMemo(() => {
-    if (weight) return weight;
-    
-    // Headlines default to semibold
-    if (variant?.startsWith("headline-") || variant === "h1" || variant === "h2" || variant === "h3") {
-      return "semibold";
-    }
-    
-    // Buttons and labels default to medium
-    if (variant?.startsWith("button-") || variant?.startsWith("label-")) {
-      return "medium";
-    }
-    
-    return "regular";
-  }, [variant, weight]);
+  const Comp = as ?? tagMap[variant ?? 'p'];
 
   return (
-    <Component
-      className={cn(typographyVariants({ variant, weight: autoWeight }), className)}
+    <Comp
+      className={cn(
+        typographyVariants({ variant, color, weight, align }),
+        truncate && 'truncate',
+        noWrap && 'whitespace-nowrap',
+        className
+      )}
       {...props}
     />
-  )
+  );
 }

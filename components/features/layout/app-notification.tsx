@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
 
 type Notification = {
@@ -131,12 +132,14 @@ export function AppNotification() {
             <div className="flex w-full items-start justify-between gap-3">
               {/* Text */}
               <div className="flex flex-col gap-0.5">
-                <span className="text-sm leading-snug font-medium">{n.title}</span>
+                <Typography variant="span" weight="medium">
+                  {n.title}
+                </Typography>
 
                 {n.description && (
-                  <span className="text-muted-foreground text-xs">
+                  <Typography variant="span" color="muted" className="text-xs">
                     {n.description}
-                  </span>
+                  </Typography>
                 )}
               </div>
 

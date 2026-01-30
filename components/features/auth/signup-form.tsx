@@ -16,6 +16,7 @@ import {
   FieldLabel,
   FieldSeparator,
 } from '@/components/ui/field';
+import { Typography } from '@/components/ui/typography';
 import { Form } from '@/components/custom/rhf/rhf-form';
 import { FormField } from '@/components/custom/rhf/rhf-form-field';
 
@@ -55,10 +56,16 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
             <div className="p-6 md:p-8">
               <FieldGroup>
                 <div className="flex flex-col items-center gap-2 text-center">
-                  <h1 className="text-2xl font-bold">Create your account</h1>
-                  <p className="text-muted-foreground text-sm text-balance">
+                  <Typography variant="h1" className="text-2xl font-bold">
+                    Create your account
+                  </Typography>
+                  <Typography
+                    variant="span"
+                    color="muted"
+                    className="text-sm text-balance"
+                  >
                     Enter your email below to create your account
-                  </p>
+                  </Typography>
                 </div>
                 <FormField
                   name="email"
