@@ -12,6 +12,7 @@ import {
   DialogFooter,
   DialogDescription,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 const dialogContentVariants = cva('flex max-h-[90dvh] flex-col gap-4 p-4', {
   variants: {
@@ -58,11 +59,13 @@ export interface AppDialogProps
   bodyClassName?: string;
 
   children: React.ReactNode;
+
+  onCancel?: () => void;
+  onConfirm?: () => void;
 }
 
 export function AppDialog({
   open,
-  onOpenChange,
   title,
   description,
   titleIcon,
@@ -73,6 +76,9 @@ export function AppDialog({
   className,
   bodyClassName,
   children,
+  onCancel,
+  onConfirm,
+  onOpenChange,
 }: AppDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -96,7 +102,16 @@ export function AppDialog({
 
         {footer && (
           <>
-            <DialogFooter>{footer}</DialogFooter>
+            <DialogFooter className="flex flex-col justify-start sm:flex-col sm:justify-start">
+              {footer}
+
+              <div className="ml-auto flex gap-2">
+                <Button variant="outline" onClick={onCancel}>
+                  Cancel
+                </Button>
+                <Button onClick={onConfirm}>OK</Button>
+              </div>
+            </DialogFooter>
           </>
         )}
       </DialogContent>

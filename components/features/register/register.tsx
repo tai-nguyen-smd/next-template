@@ -3,6 +3,7 @@ import { AppDialog } from '@/components/custom/dialog/dialog';
 import { PageHeader } from '@/components/features/layout/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
 import { useState } from 'react';
 
@@ -29,12 +30,14 @@ export function Register() {
         onOpenChange={setOpen}
         title="Register"
         size="sm"
+        onCancel={() => setOpen(false)}
+        onConfirm={() => setOpen(false)}
         footer={
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              Close
-            </Button>
-            <Button onClick={() => setOpen(false)}>Save</Button>
+          <div className="flex gap-2">
+            <Checkbox />
+            <Typography variant="span" as="label">
+              By clicking OK, you agree to the terms and conditions.
+            </Typography>
           </div>
         }
       >
