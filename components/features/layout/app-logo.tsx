@@ -15,7 +15,7 @@ export function AppLogo() {
         src="/images/logo.png"
         alt="Logo"
         width={110}
-        height={16}
+        height={32}
         priority
         className={cn('transition-opacity', 'group-data-[collapsible=icon]:hidden')}
       />

@@ -7,6 +7,7 @@ import {
   Command,
   GalleryVerticalEnd,
   Plus,
+  Check,
 } from 'lucide-react';
 
 import {
@@ -22,9 +23,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from '@/components/ui/sidebar';
 import { Typography } from '@/components/ui/typography';
+import { cn } from '@/lib/utils';
 
 export interface FirmSwitcherProps {
   id?: string;
@@ -48,8 +49,6 @@ export function FirmSwitcher() {
       plan: 'Free',
     },
   ];
-  const { isMobile } = useSidebar();
-  console.log({ isMobile });
   const [activeTeam, setActiveTeam] = React.useState(firms[0]);
 
   if (!activeTeam) {
@@ -80,7 +79,7 @@ export function FirmSwitcher() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="flex w-(--radix-dropdown-menu-trigger-width) min-w-56 flex-col gap-1 rounded-lg"
             align="start"
             side="bottom"
             sideOffset={4}
@@ -88,20 +87,31 @@ export function FirmSwitcher() {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Firms
             </DropdownMenuLabel>
-            {firms.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
-                className="gap-2 p-2"
-                aria-selected={activeTeam.name === team.name}
-              >
-                <div className="flex size-6 items-center justify-center rounded-md border">
-                  <team.logo className="size-3.5 shrink-0" />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            ))}
+            {firms.map((team, index) => {
+              const isSelected = activeTeam.name === team.name;
+              return (
+                <DropdownMenuItem
+                  key={team.name}
+                  onClick={() => setActiveTeam(team)}
+                  className={cn(
+                    'gap-2 p-2',
+                    isSelected && 'bg-primary text-accent-foreground'
+                  )}
+                  aria-selected={isSelected}
+                >
+                  <div className="flex size-6 items-center justify-center rounded-md border">
+                    <team.logo className="size-3.5 shrink-0" />
+                  </div>
+                  {team.name}
+                  {isSelected && (
+                    <Check className="text-primary-foreground ml-auto size-4" />
+                  )}
+                  {!isSelected && (
+                    <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                  )}
+                </DropdownMenuItem>
+              );
+            })}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
