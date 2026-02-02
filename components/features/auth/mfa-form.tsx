@@ -1,12 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form } from '@/components/custom/rhf/rhf-form';
 import { FormField } from '@/components/custom/rhf/rhf-form-field';
 import AuthCard from './auth-card';
@@ -32,7 +31,7 @@ const mfaSchema = z.object({
 type MFAFormData = z.infer<typeof mfaSchema>;
 
 export function MFAForm() {
-  const [isVerified, setIsVerified] = useState(false);
+  const router = useRouter();
   const form = useForm<MFAFormData>({
     resolver: zodResolver(mfaSchema),
     mode: 'onChange',
@@ -48,8 +47,8 @@ export function MFAForm() {
     try {
       const result = await verifyMutation.mutateAsync({ otp: data.otp });
       if (result.success) {
-        setIsVerified(true);
-        form.reset();
+        // Redirect to success page
+        router.push('/auth/setup-mfa/success');
       }
     } catch (error) {
       // Error is handled by the mutation
@@ -168,58 +167,36 @@ export function MFAForm() {
             <Typography variant="h3">Enter Digit Code</Typography>
           </div>
 
-          {isVerified ? (
-            <div className="mt-4 flex flex-col gap-4">
-              <AlertMessage
-                message="MFA has been successfully set up! Your account is now protected with two-factor authentication."
-                variant="success"
-              />
-              <Button
-                onClick={() => {
-                  setIsVerified(false);
-                  form.reset();
-                }}
-                variant="outline"
-              >
-                Set up another device
-              </Button>
-            </div>
-          ) : (
-            <>
-              <Typography variant="p">
-                Please enter 6-digit OTP from the authentication app to verify and
-                complete the setup
-              </Typography>
+          <Typography variant="p">
+            Please enter 6-digit OTP from the authentication app to verify and
+            complete the setup
+          </Typography>
 
-              {verifyMutation.isError && (
-                <AlertMessage
-                  message={
-                    verifyMutation.error?.message ||
-                    'Failed to verify OTP. Please try again.'
-                  }
-                  variant="destructive"
-                />
-              )}
-
-              <Form form={form} schema={mfaSchema} onSubmit={onSubmit}>
-                <FormField
-                  name="otp"
-                  label="Enter OTP"
-                  type="otp"
-                  maxLength={6}
-                  required
-                />
-                <Button
-                  type="submit"
-                  disabled={!form.formState.isValid || verifyMutation.isPending}
-                >
-                  {verifyMutation.isPending
-                    ? 'Verifying...'
-                    : 'Verify & Complete Setup'}
-                </Button>
-              </Form>
-            </>
+          {verifyMutation.isError && (
+            <AlertMessage
+              message={
+                verifyMutation.error?.message ||
+                'Failed to verify OTP. Please try again.'
+              }
+              variant="destructive"
+            />
           )}
+
+          <Form form={form} schema={mfaSchema} onSubmit={onSubmit}>
+            <FormField
+              name="otp"
+              label="Enter OTP"
+              type="otp"
+              maxLength={6}
+              required
+            />
+            <Button
+              type="submit"
+              disabled={!form.formState.isValid || verifyMutation.isPending}
+            >
+              {verifyMutation.isPending ? 'Verifying...' : 'Verify & Complete Setup'}
+            </Button>
+          </Form>
         </CardContent>
       </Card>
     </AuthCard>
