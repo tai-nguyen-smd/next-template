@@ -1,4 +1,4 @@
-import { httpClient } from './http-client';
+import { httpClient } from './http/http-client';
 
 export interface MFAQRCodeResponse {
   qrCodeData: string;
