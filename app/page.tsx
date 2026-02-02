@@ -1,7 +1,5 @@
+import { AppFlash } from '@/components/features/layout/app-flash';
+
 export default async function HomePage() {
-  return (
-    <div>
-      <h1>Hello World</h1>
-    </div>
-  );
+  return <AppFlash />;
 }

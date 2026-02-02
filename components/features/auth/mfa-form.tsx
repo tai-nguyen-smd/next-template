@@ -8,7 +8,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form } from '@/components/custom/rhf/rhf-form';
 import { FormField } from '@/components/custom/rhf/rhf-form-field';
 import AuthCard from './auth-card';
-import { Field, FieldGroup } from '@/components/ui/field';
 import Image from 'next/image';
 import GooglePlayBadge from '@/public/images/google-play-badge.png';
 import Link from 'next/link';
@@ -137,19 +136,13 @@ export function MFAForm() {
             Please enter 6-digit OTP from the authentication app
           </Typography>
 
-          <Form
-            form={form}
-            schema={mfaSchema}
-            onSubmit={onSubmit}
-            className="mx-auto"
-          >
+          <Form form={form} schema={mfaSchema} onSubmit={onSubmit}>
             <FormField
               name="otp"
               label="Enter OTP"
               type="otp"
               maxLength={6}
               required
-              className="mx-auto"
             />
             <Button type="submit" disabled={!form.formState.isValid}>
               Log in

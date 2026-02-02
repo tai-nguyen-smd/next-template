@@ -507,9 +507,17 @@ export function FormField(props: FormFieldProps): React.ReactElement {
           disabled={otpProps.disabled}
           aria-invalid={error ? 'true' : 'false'}
         >
-          <InputOTPGroup>
+          <InputOTPGroup
+            className={cn(
+              'gap-1 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border sm:gap-2 md:gap-3'
+            )}
+          >
             {Array.from({ length: maxLength }).map((_, index) => (
-              <InputOTPSlot key={index} index={index} />
+              <InputOTPSlot
+                key={index}
+                index={index}
+                className="text-base font-semibold"
+              />
             ))}
           </InputOTPGroup>
         </InputOTP>
