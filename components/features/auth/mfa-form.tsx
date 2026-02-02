@@ -15,7 +15,7 @@ import Link from 'next/link';
 import AppStoreBadge from '@/public/images/apple-store-badge.png';
 import { Card, CardContent } from '@/components/ui/card';
 import { Typography } from '@/components/ui/typography';
-import { useMFAQRCode, useVerifyMFA } from '@/hooks/queries/use-mfa';
+import { useMFAQRCode, useVerifyTOTP } from '@/hooks/queries/use-mfa';
 import { AlertMessage } from '@/components/custom/alert-message/alert-message';
 
 // Zod schema for MFA validation
@@ -41,7 +41,7 @@ export function MFAForm() {
   });
 
   const { data: qrCodeData, isLoading, isError } = useMFAQRCode();
-  const verifyMutation = useVerifyMFA();
+  const verifyMutation = useVerifyTOTP();
 
   const onSubmit = async (data: MFAFormData) => {
     try {
@@ -175,8 +175,7 @@ export function MFAForm() {
           {verifyMutation.isError && (
             <AlertMessage
               message={
-                verifyMutation.error?.message ||
-                'Failed to verify OTP. Please try again.'
+                'Invalid or expired code. Please enter the current 6-digit code from your authenticator app.'
               }
               variant="destructive"
             />

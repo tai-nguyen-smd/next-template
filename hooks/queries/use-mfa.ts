@@ -38,7 +38,7 @@ export function useMFAQRCode() {
 /**
  * Mutation hook to verify MFA OTP using TanStack Query
  */
-export function useVerifyMFA() {
+export function useVerifyTOTP() {
   const queryClient = useQueryClient();
 
   return useMutation<VerifyMFAResponse, Error, VerifyMFARequest>({
