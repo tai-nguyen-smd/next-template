@@ -13,7 +13,7 @@ export function ExpiredInvitationScreen() {
       <CardContent className="flex flex-col items-center gap-3">
         {/* Success Icon */}
         <div className="flex size-10 items-center justify-center rounded-full">
-          <InfoIcon className="text-primary size-8" strokeWidth={3} />
+          <InfoIcon className="text-primary-foreground/60 size-8" strokeWidth={3} />
         </div>
 
         {/* Heading */}

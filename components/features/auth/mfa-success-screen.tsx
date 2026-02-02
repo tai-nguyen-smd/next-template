@@ -5,6 +5,7 @@ import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Typography } from '@/components/ui/typography';
+import { AlertMessage } from '@/components/custom/alert-message/alert-message';
 
 export function MFASuccessScreen() {
   return (
@@ -18,15 +19,15 @@ export function MFASuccessScreen() {
         {/* Heading */}
         <div className="text-center">
           <Typography variant="h3" color="default" weight="bold" align="center">
-            Registration Completed Successfully
+            Register Successfully
           </Typography>
         </div>
 
         {/* Description */}
-        <Typography variant="p" color="default" align="center">
-          Your Saafehouse account has been successfully registered and protected with
-          two-factor authentication!
-        </Typography>
+        <AlertMessage
+          message="Your Saafehouse account has been successfully created!"
+          variant="success"
+        />
 
         {/* Sign In Button */}
         <Button asChild variant="default" className="w-full">
