@@ -17,7 +17,11 @@ const otpSchema = z.object({
     .string()
     .length(
       6,
-      'Invalid or expired code. Please enter the current 6-digit code from your email.'
+      'Invalid or expired code. Please enter the current 6-digit code from your authenticator app.'
+    )
+    .regex(
+      /^\d{6}$/,
+      'Invalid or expired code. Please enter the current 6-digit code from your authenticator app.'
     ),
 });
 
@@ -27,7 +31,6 @@ export function OTPForm() {
   const router = useRouter();
   const form = useForm<OTPFormData>({
     resolver: zodResolver(otpSchema),
-    mode: 'onChange',
     defaultValues: {
       otp: '',
     },

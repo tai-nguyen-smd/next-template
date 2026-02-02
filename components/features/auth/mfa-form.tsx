@@ -25,6 +25,10 @@ const mfaSchema = z.object({
     .length(
       6,
       'Invalid or expired code. Please enter the current 6-digit code from your authenticator app.'
+    )
+    .regex(
+      /^\d{6}$/,
+      'Invalid or expired code. Please enter the current 6-digit code from your authenticator app.'
     ),
 });
 
@@ -34,7 +38,6 @@ export function MFAForm() {
   const router = useRouter();
   const form = useForm<MFAFormData>({
     resolver: zodResolver(mfaSchema),
-    mode: 'onChange',
     defaultValues: {
       otp: '',
     },
